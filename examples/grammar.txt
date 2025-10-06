@@ -1,0 +1,14 @@
+# Gramática de ejemplo para frases sencillas en inglés
+Variables: S, NP, VP, V, Det, N, PP, P, Pronoun
+Terminals: She, eats, a, the, cake, fork, with
+Start: S
+Rules:
+  S -> NP VP
+  VP -> V NP | VP PP
+  NP -> Det N | Pronoun | NP PP
+  PP -> P NP
+  V -> eats
+  Det -> a | the
+  N -> cake | fork
+  P -> with
+  Pronoun -> She
