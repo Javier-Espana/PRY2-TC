@@ -32,11 +32,22 @@ construir su árbol de derivación.
 
 ## ✅ Ejecución
 
+En Windows (PowerShell):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork"
+```
+
+En Linux/macOS (bash):
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install --upgrade pip
-python main.py grammar.txt "She eats a cake with a fork"
+python -m pip install --upgrade pip
+python main.py examples/grammar_instructions.txt "she eats a cake with a fork"
 ```
 
 Argumentos relevantes:
@@ -46,6 +57,8 @@ Argumentos relevantes:
 - `--tokens` permite indicar manualmente los tokens (sin volver a tokenizar la
   frase).
 - `--lowercase` convierte la oración a minúsculas antes de tokenizarla.
+- `--tree-dot archivo.dot` exporta el árbol en formato Graphviz DOT cuando la frase es aceptada.
+- `--tree-png archivo.png` renderiza directamente a PNG usando la librería Python `graphviz` y el binario de Graphviz (`dot`).
 
 El programa imprime si la oración pertenece al lenguaje, el tiempo de ejecución
 (y en nanosegundos se usa notación decimal) y, cuando procede, el árbol de
@@ -53,28 +66,68 @@ análisis.
 
 ## 🧪 Ejemplos de uso
 
-Tomando la gramática del README (`grammar.txt` en la carpeta `examples`):
+Usando la gramática del enunciado incluida en `examples/grammar_instructions.txt`:
 
-- Frases **aceptadas**:
-  - `She eats a cake`
-  - `She eats the cake with a fork`
-  - `She eats a cake with a fork`
-- Frases **rechazadas**:
-  - `She cake eats`
-  - `She eats`
-  - `She eats fork`
+- 2 aceptadas y semánticamente correctas:
+  - `she eats a cake`
+  - `he drinks the juice`
+- 2 aceptadas pero semánticamente extrañas (sintácticamente válidas):
+  - `the oven drinks a soup`
+  - `the knife eats the meat`
+- 2 no aceptadas por la gramática:
+  - `she eat a cake` (verbo fuera del inventario: falta la forma "eat" singular)
+  - `drinks she the juice` (orden no permitido por la gramática)
 
 El árbol de derivación se imprime con indentación. Ejemplo parcial:
 
 ```
 S
-  NP -> 'She'
+  NP -> 'she'
   VP
     V -> 'eats'
     NP
       Det -> 'a'
       N -> 'cake'
 ```
+
+### Exportar y visualizar el árbol (Graphviz)
+
+Puedes generar un archivo DOT y luego renderizarlo como PNG/SVG si tienes Graphviz instalado.
+
+1) Exportar DOT desde el programa (Windows PowerShell):
+
+```powershell
+python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork" --tree-dot .\tree.dot
+```
+
+2) Renderizar con Graphviz:
+
+- Windows (si `dot.exe` está en PATH):
+
+```powershell
+dot -Tpng .\tree.dot -o .\tree.png
+```
+
+- Linux/macOS:
+
+```bash
+dot -Tsvg tree.dot -o tree.svg
+```
+
+Instalación de Graphviz:
+- Windows: https://graphviz.org/download/ (agrega Graphviz\bin al PATH)
+- Linux: `sudo apt-get install graphviz` o equivalente
+- macOS: `brew install graphviz`
+
+También puedes generar la imagen PNG directamente desde el programa con:
+
+```powershell
+python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork" --tree-png .\tree.png
+```
+
+Requisitos para `--tree-png`:
+- Paquete Python: `pip install graphviz` (ya está en `requirements.txt`)
+- Binario Graphviz instalado en el sistema y accesible en PATH (`dot`)
 
 ## 💬 Discusión
 

@@ -1,0 +1,23 @@
+# Gramática del enunciado (frases simples en inglés)
+Variables: S, NP, VP, PP, V, P, N, Det
+Terminals: he, she, cooks, drinks, eats, cuts, in, with, cat, dog, beer, cake, juice, meat, soup, fork, knife, oven, spoon, a, the
+Start: S
+Rules:
+  S -> NP VP
+
+  VP -> VP PP
+  VP -> V NP
+  VP -> cooks | drinks | eats | cuts
+
+  PP -> P NP
+
+  NP -> Det N
+  NP -> he | she
+
+  V -> cooks | drinks | eats | cuts
+
+  P -> in | with
+
+  N -> cat | dog | beer | cake | juice | meat | soup | fork | knife | oven | spoon
+
+  Det -> a | the

@@ -16,6 +16,7 @@ from src.parser import (
 	parse_grammar,
 	tokens_from_sentence,
 )
+from src.visualize import tree_to_dot
 
 
 def _build_argument_parser() -> argparse.ArgumentParser:
@@ -50,6 +51,19 @@ def _build_argument_parser() -> argparse.ArgumentParser:
 		"--tokens",
 		nargs="*",
 		help="Permite especificar los tokens manualmente. Ignora --lowercase y la frase libre.",
+	)
+	parser.add_argument(
+		"--tree-dot",
+		type=Path,
+		help="Si la cadena es aceptada, exporta el parse tree en formato Graphviz DOT al archivo indicado.",
+	)
+	parser.add_argument(
+		"--tree-png",
+		type=Path,
+		help=(
+			"Si la cadena es aceptada, renderiza el parse tree a PNG usando Graphviz. "
+			"Requiere tener instalado el paquete Python 'graphviz' y la herramienta Graphviz (dot) en el sistema."
+		),
 	)
 	return parser
 
@@ -93,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
 	accepted, table, back = cyk_parse(cnf_grammar, tokens)
 	elapsed = time.perf_counter() - start_time
 
-	verdict = "SI" if accepted else "NO"
+	verdict = "SÍ" if accepted else "NO"
 	print(f"Tokens: {tokens}")
 	print(f"Pertenece al lenguaje: {verdict}")
 	print(f"Tiempo CYK: {elapsed:.6f} s")
@@ -102,6 +116,36 @@ def main(argv: list[str] | None = None) -> int:
 		tree = build_parse_tree(tokens, back, cnf_grammar.start_symbol)
 		print("Parse tree:")
 		print(format_tree(tree))
+
+		# Exportaciones opcionales
+		dot = None
+		if args.tree_dot or args.tree_png:
+			dot = tree_to_dot(tree)
+
+		if args.tree_dot and dot is not None:
+			try:
+				args.tree_dot.write_text(dot, encoding="utf-8")
+			except OSError as exc:
+				parser.error(f"No se pudo escribir el archivo DOT: {exc}")
+
+		if args.tree_png and dot is not None:
+			try:
+				import graphviz  # type: ignore
+			except Exception:
+				parser.error(
+					"Falta la librería Python 'graphviz'. Instálala con: python -m pip install graphviz"
+				)
+			try:
+				png_bytes = graphviz.Source(dot).pipe(format="png")
+			except Exception as exc:  # incluye Ejecutable dot no encontrado
+				parser.error(
+					"No se pudo invocar Graphviz (dot). Asegúrate de instalar Graphviz y que 'dot' esté en PATH. "
+					f"Detalle: {exc}"
+				)
+			try:
+				args.tree_png.write_bytes(png_bytes)
+			except OSError as exc:
+				parser.error(f"No se pudo escribir el PNG: {exc}")
 	else:
 		print("No se puede construir un parse tree porque la cadena no pertenece al lenguaje.")
 
