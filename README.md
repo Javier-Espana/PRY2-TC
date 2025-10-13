@@ -32,13 +32,15 @@ construir su árbol de derivación.
 
 ## ✅ Ejecución
 
+### Instalación de dependencias
+
 En Windows (PowerShell):
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork"
+python -m pip install -r requirements.txt
 ```
 
 En Linux/macOS (bash):
@@ -47,7 +49,25 @@ En Linux/macOS (bash):
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python main.py examples/grammar_instructions.txt "she eats a cake with a fork"
+python -m pip install -r requirements.txt
+```
+
+### Ejecución del programa
+
+Una vez instaladas las dependencias, el programa se ejecuta con:
+
+```bash
+python main.py <archivo_gramatica> "<frase_a_analizar>"
+```
+
+Ejemplo en Windows (PowerShell):
+```powershell
+python main.py examples\grammar_instructions.txt "she eats a cake"
+```
+
+Ejemplo en Linux/macOS (bash):
+```bash
+python main.py examples/grammar_instructions.txt "she eats a cake"
 ```
 
 Argumentos relevantes:
@@ -94,22 +114,30 @@ S
 
 Puedes generar un archivo DOT y luego renderizarlo como PNG/SVG si tienes Graphviz instalado.
 
-1) Exportar DOT desde el programa (Windows PowerShell):
+1) Exportar DOT desde el programa:
 
+```bash
+python main.py <archivo_gramatica> "<frase>" --tree-dot <archivo_salida.dot>
+```
+
+Ejemplo en Windows (PowerShell):
 ```powershell
-python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork" --tree-dot .\tree.dot
+python main.py examples\grammar_instructions.txt "she eats a cake" --tree-dot tree.dot
+```
+
+Ejemplo en Linux/macOS (bash):
+```bash
+python main.py examples/grammar_instructions.txt "she eats a cake" --tree-dot tree.dot
 ```
 
 2) Renderizar con Graphviz:
 
-- Windows (si `dot.exe` está en PATH):
-
+Windows (si `dot.exe` está en PATH):
 ```powershell
-dot -Tpng .\tree.dot -o .\tree.png
+dot -Tpng tree.dot -o tree.png
 ```
 
-- Linux/macOS:
-
+Linux/macOS:
 ```bash
 dot -Tsvg tree.dot -o tree.svg
 ```
@@ -121,8 +149,18 @@ Instalación de Graphviz:
 
 También puedes generar la imagen PNG directamente desde el programa con:
 
+```bash
+python main.py <archivo_gramatica> "<frase>" --tree-png <archivo_salida.png>
+```
+
+Ejemplo en Windows (PowerShell):
 ```powershell
-python .\main.py .\examples\grammar_instructions.txt "she eats a cake with a fork" --tree-png .\tree.png
+python main.py examples\grammar_instructions.txt "she eats a cake" --tree-png tree.png
+```
+
+Ejemplo en Linux/macOS (bash):
+```bash
+python main.py examples/grammar_instructions.txt "she eats a cake" --tree-png tree.png
 ```
 
 Requisitos para `--tree-png`:
@@ -147,18 +185,21 @@ Requisitos para `--tree-png`:
 
 ```
 PRY2-TC/
-├── main.py            # CLI principal
+├── main.py              # CLI principal
+├── requirements.txt     # Dependencias del proyecto
 ├── src/
-│   ├── __init__.py    # Punto de entrada del paquete
-│   ├── parser.py      # Capa de compatibilidad / API pública
-│   ├── grammar.py     # Modelo de la gramática
-│   ├── grammar_io.py  # Parser y serialización de gramáticas
-│   ├── cnf.py         # Conversión a Forma Normal de Chomsky
-│   ├── cyk.py         # Algoritmo CYK y reconstrucción del árbol
-│   └── utils.py       # Utilidades auxiliares (tokenización, etc.)
-├── README.md          # Este documento
+│   ├── __init__.py      # Punto de entrada del paquete
+│   ├── parser.py        # Capa de compatibilidad / API pública
+│   ├── grammar.py       # Modelo de la gramática
+│   ├── grammar_io.py    # Parser y serialización de gramáticas
+│   ├── cnf.py           # Conversión a Forma Normal de Chomsky
+│   ├── cyk.py           # Algoritmo CYK y reconstrucción del árbol
+│   ├── utils.py         # Utilidades auxiliares (tokenización, etc.)
+│   └── visualize.py     # Generación de grafos DOT para Graphviz
+├── README.md            # Este documento
 └── examples/
-    └── grammar.txt    # Gramática de ejemplo (ver instrucciones)
+    ├── grammar.txt              # Gramática de ejemplo
+    └── grammar_instructions.txt # Gramática del enunciado del proyecto
 ```
 
 > Nota: crea la carpeta `examples/` con tu propia gramática para ejecutar los

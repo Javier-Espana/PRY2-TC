@@ -1,8 +1,16 @@
-"""Thin compatibility layer exposing the public parser API.
+"""
+Capa de compatibilidad que expone la API pública del parser.
 
-All heavy lifting lives in specialised modules (``grammar``, ``grammar_io``,
-``cnf``, ``cyk`` and ``utils``). Import from here to keep external code stable
-while benefitting from a modular internal structure.
+Este módulo actúa como punto de entrada unificado para todas las funcionalidades
+del proyecto. El trabajo pesado se realiza en módulos especializados:
+- grammar: Estructuras de datos para gramáticas
+- grammar_io: Lectura y escritura de archivos de gramática  
+- cnf: Conversión a Forma Normal de Chomsky
+- cyk: Algoritmo CYK de análisis sintáctico
+- utils: Utilidades diversas
+
+Importar desde aquí mantiene el código externo estable mientras se beneficia
+de una estructura interna modular.
 """
 
 from __future__ import annotations
