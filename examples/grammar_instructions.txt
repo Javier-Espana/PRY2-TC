@@ -1,23 +1,28 @@
 # Gramática del enunciado (frases simples en inglés)
 Variables: S, NP, VP, PP, V, P, N, Det
-Terminals: he, she, cooks, drinks, eats, cuts, in, with, cat, dog, beer, cake, juice, meat, soup, fork, knife, oven, spoon, a, the
+Terminals: he, she, He, She, cooks, drinks, eats, cuts, Cooks, Drinks, Eats, Cuts, in, with, In, With, cat, dog, beer, cake, juice, meat, soup, fork, knife, oven, spoon, Cat, Dog, Beer, Cake, Juice, Meat, Soup, Fork, Knife, Oven, Spoon, a, the, A, The
 Start: S
 Rules:
   S -> NP VP
 
   VP -> VP PP
   VP -> V NP
-  VP -> cooks | drinks | eats | cuts
+  VP -> cooks | drinks | eats | cuts | Cooks | Drinks | Eats | Cuts
 
   PP -> P NP
 
   NP -> Det N
-  NP -> he | she
+  NP -> he | she | He | She
 
-  V -> cooks | drinks | eats | cuts
+  V -> cooks | drinks | eats | cuts | Cooks | Drinks | Eats | Cuts
 
-  P -> in | with
+  P -> in | with | In | With
 
-  N -> cat | dog | beer | cake | juice | meat | soup | fork | knife | oven | spoon
+  N -> cat | dog
+  N -> beer | cake | juice | meat | soup
+  N -> fork | knife | oven | spoon
+  N -> Cat | Dog
+  N -> Beer | Cake | Juice | Meat | Soup
+  N -> Fork | Knife | Oven | Spoon
 
-  Det -> a | the
+  Det -> a | the | A | The
