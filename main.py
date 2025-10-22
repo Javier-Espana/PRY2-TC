@@ -68,16 +68,28 @@ def _build_argument_parser() -> argparse.ArgumentParser:
 	)
 	parser.add_argument(
 		"--tree-dot",
-		type=Path,
-		help="Si la cadena es aceptada, exporta el parse tree en formato Graphviz DOT al archivo indicado.",
+		action="store_true",
+		help="Si la cadena es aceptada, exporta el parse tree en formato Graphviz DOT (nombre generado automáticamente).",
 	)
 	parser.add_argument(
 		"--tree-png",
-		type=Path,
+		action="store_true",
+		default=True,
 		help=(
-			"Si la cadena es aceptada, renderiza el parse tree a PNG usando Graphviz. "
-			"Requiere tener instalado el paquete Python 'graphviz' y la herramienta Graphviz (dot) en el sistema."
+			"Si la cadena es aceptada, renderiza el parse tree a PNG usando Graphviz (nombre generado automáticamente). "
+			"Requiere tener instalado el paquete Python 'graphviz' y la herramienta Graphviz (dot) en el sistema. "
+			"Por defecto: True"
 		),
+	)
+	parser.add_argument(
+		"--no-tree",
+		action="store_true",
+		help="Desactiva la generación automática de archivos PNG y DOT del árbol sintáctico.",
+	)
+	parser.add_argument(
+		"--no-color",
+		action="store_true",
+		help="Desactiva la colorimetría en los árboles de Graphviz (genera árboles en blanco y negro).",
 	)
 	return parser
 
@@ -113,7 +125,7 @@ def main(argv: list[str] | None = None) -> int:
 	if args.cnf_output is not None:
 		try:
 			args.cnf_output.write_text("\n".join(grammar_to_lines(cnf_grammar)) + "\n", encoding="utf-8")
-			print(f"✅ Gramática CNF guardada en: {args.cnf_output}")
+			print(f"Gramática CNF guardada en: {args.cnf_output}")
 		except OSError as exc:
 			parser.error(f"No se pudo escribir la gramática CNF: {exc}")
 
@@ -149,21 +161,42 @@ def main(argv: list[str] | None = None) -> int:
 		print("Parse tree:")
 		print(format_tree(tree))
 
-		# Generar representación DOT si se necesita para exportación
+		# Generar nombres de archivo automáticamente basados en los tokens
+		def generate_filename(tokens: list[str], extension: str) -> str:
+			"""Genera un nombre de archivo basado en los tokens parseados."""
+			# Unir tokens con guión bajo y sanitizar caracteres especiales
+			base_name = "_".join(tokens)
+			# Limitar longitud y eliminar caracteres problemáticos
+			base_name = base_name.replace("/", "_").replace("\\", "_").replace(".", "_")
+			if len(base_name) > 50:
+				base_name = base_name[:50]
+			return f"{base_name}.{extension}"
+
+		# Generar representación DOT si no se especificó --no-tree
 		dot = None
-		if args.tree_dot or args.tree_png:
-			dot = tree_to_dot(tree)
+		should_export = not args.no_tree and (args.tree_dot or args.tree_png)
+		
+		if should_export:
+			# Aplicar colores a menos que se haya especificado --no-color
+			colorize = not args.no_color
+			dot = tree_to_dot(tree, colorize=colorize)
 
 		# Exportar árbol en formato DOT si se solicita
-		if args.tree_dot and dot is not None:
+		if args.tree_dot and dot is not None and not args.no_tree:
+			dot_filename = generate_filename(tokens, "dot")
+			dot_path = Path(dot_filename)
 			try:
-				args.tree_dot.write_text(dot, encoding="utf-8")
-				print(f"Árbol exportado a: {args.tree_dot}")
+				dot_path.write_text(dot, encoding="utf-8")
+				print(f"Árbol exportado como DOT: {dot_path}")
 			except OSError as exc:
 				parser.error(f"No se pudo escribir el archivo DOT: {exc}")
 
-		# Exportar árbol como imagen PNG si se solicita
-		if args.tree_png and dot is not None:
+		# Exportar árbol como imagen PNG (por defecto, a menos que --no-tree)
+		if args.tree_png and not args.no_tree:
+			if dot is None:
+				colorize = not args.no_color
+				dot = tree_to_dot(tree, colorize=colorize)
+			
 			try:
 				import graphviz  # type: ignore
 			except Exception:
@@ -178,9 +211,12 @@ def main(argv: list[str] | None = None) -> int:
 					"No se pudo invocar Graphviz (dot). Asegúrate de instalar Graphviz y que 'dot' esté en PATH. "
 					f"Detalle: {exc}"
 				)
+			
+			png_filename = generate_filename(tokens, "png")
+			png_path = Path(png_filename)
 			try:
-				args.tree_png.write_bytes(png_bytes)
-				print(f"Árbol exportado como PNG: {args.tree_png}")
+				png_path.write_bytes(png_bytes)
+				print(f"Árbol exportado como PNG: {png_path}")
 			except OSError as exc:
 				parser.error(f"No se pudo escribir el PNG: {exc}")
 	else:

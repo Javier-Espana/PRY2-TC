@@ -1,1 +1,10 @@
 __pycache__/
+*.pyc
+venv/
+.venv/
+*.png
+*.dot
+*.txt
+!requirements.txt
+!examples/*.txt
+!docs/*.md

@@ -5,7 +5,7 @@ a su Forma Normal de Chomsky (CNF) y el algoritmo de Cocke–Younger–Kasami (C
 verificar si una oración pertenece al lenguaje descrito por la gramática y
 construir su árbol de derivación.
 
-## 📐 Diseño de la aplicación
+## Diseño de la aplicación
 
 - **Representación de la gramática**: la clase `Grammar` (en `src/grammar.py`)
   almacena el conjunto de variables, terminales, símbolo inicial y un diccionario
@@ -30,7 +30,7 @@ construir su árbol de derivación.
   la presentación de resultados (incluyendo el tiempo medido con
   `time.perf_counter`).
 
-## ✅ Ejecución
+## Ejecución
 
 ### Instalación de dependencias
 
@@ -60,6 +60,8 @@ Una vez instaladas las dependencias, el programa se ejecuta con:
 python main.py <archivo_gramatica> "<frase_a_analizar>"
 ```
 
+**Por defecto**, el programa **genera automáticamente un archivo PNG** con el árbol sintáctico si la frase es aceptada. El nombre del archivo se basa en los tokens de la frase (ejemplo: `She_eats_a_cake.png`).
+
 Ejemplo en Windows (PowerShell):
 ```powershell
 python main.py examples\grammar_instructions.txt "she eats a cake"
@@ -70,21 +72,21 @@ Ejemplo en Linux/macOS (bash):
 python main.py examples/grammar_instructions.txt "she eats a cake"
 ```
 
-Argumentos relevantes:
+**Argumentos opcionales:**
 
-- `--show-cnf` muestra la gramática transformada a CNF por la salida estándar.
-- `--cnf-output archivo` guarda la gramática CNF en el archivo indicado.
-- `--tokens` permite indicar manualmente los tokens (sin volver a tokenizar la
-  frase).
-- `--lowercase` convierte la oración a minúsculas antes de tokenizarla.
-- `--tree-dot archivo.dot` exporta el árbol en formato Graphviz DOT cuando la frase es aceptada.
-- `--tree-png archivo.png` renderiza directamente a PNG usando la librería Python `graphviz` y el binario de Graphviz (`dot`).
+- `--show-cnf` - Muestra la gramática transformada a CNF por la salida estándar.
+- `--cnf-output archivo` - Guarda la gramática CNF en el archivo indicado.
+- `--tokens` - Permite indicar manualmente los tokens (sin volver a tokenizar la frase).
+- `--lowercase` - Convierte la oración a minúsculas antes de tokenizarla.
+- `--tree-dot` - Exporta además el árbol en formato Graphviz DOT (nombre generado automáticamente).
+- `--no-tree` - Desactiva la generación automática de archivos PNG/DOT del árbol.
+- `--no-color` - Desactiva la colorimetría en los árboles (genera gráficos en blanco y negro).
 
 El programa imprime si la oración pertenece al lenguaje, el tiempo de ejecución
 (y en nanosegundos se usa notación decimal) y, cuando procede, el árbol de
 análisis.
 
-## 🧪 Ejemplos de uso
+## Ejemplos de uso
 
 Usando la gramática del enunciado incluida en `examples/grammar_instructions.txt`:
 
@@ -110,27 +112,46 @@ S
       N -> 'cake'
 ```
 
-### Exportar y visualizar el árbol (Graphviz)
+### Visualización del árbol sintáctico (Graphviz)
 
-Puedes generar un archivo DOT y luego renderizarlo como PNG/SVG si tienes Graphviz instalado.
+**El programa genera automáticamente archivos PNG con el árbol de análisis sintáctico** cuando la frase es aceptada. No es necesario especificar ningún argumento adicional.
 
-1) Exportar DOT desde el programa:
+El programa genera árboles con **colorimetría automática**:
+- **Azul**: Símbolo inicial (S0)
+- **Verde**: Variables no terminales (NP, VP, Det, etc.)
+- **Naranja**: Terminales (palabras de la frase)
+
+Ver documentación detallada en [`docs/COLORS.md`](docs/COLORS.md).
+
+#### Uso básico (genera PNG automáticamente)
 
 ```bash
-python main.py <archivo_gramatica> "<frase>" --tree-dot <archivo_salida.dot>
+python main.py examples/grammar_instructions.txt "she eats a cake"
+# Genera: she_eats_a_cake.png
 ```
 
-Ejemplo en Windows (PowerShell):
-```powershell
-python main.py examples\grammar_instructions.txt "she eats a cake" --tree-dot tree.dot
-```
+#### Generar también el archivo DOT
 
-Ejemplo en Linux/macOS (bash):
 ```bash
-python main.py examples/grammar_instructions.txt "she eats a cake" --tree-dot tree.dot
+python main.py examples/grammar_instructions.txt "she eats a cake" --tree-dot
+# Genera: she_eats_a_cake.png y she_eats_a_cake.dot
 ```
 
-2) Renderizar con Graphviz:
+#### Desactivar la generación de archivos
+
+```bash
+python main.py examples/grammar_instructions.txt "she eats a cake" --no-tree
+# No genera ningún archivo PNG/DOT
+```
+
+#### Generar árbol sin colores (blanco y negro)
+
+```bash
+python main.py examples/grammar_instructions.txt "she eats a cake" --no-color
+# Genera: she_eats_a_cake.png (sin colorimetría)
+```
+
+#### Renderizar manualmente con Graphviz
 
 Windows (si `dot.exe` está en PATH):
 ```powershell
