@@ -113,6 +113,7 @@ def main(argv: list[str] | None = None) -> int:
 	if args.cnf_output is not None:
 		try:
 			args.cnf_output.write_text("\n".join(grammar_to_lines(cnf_grammar)) + "\n", encoding="utf-8")
+			print(f"✅ Gramática CNF guardada en: {args.cnf_output}")
 		except OSError as exc:
 			parser.error(f"No se pudo escribir la gramática CNF: {exc}")
 
@@ -157,6 +158,7 @@ def main(argv: list[str] | None = None) -> int:
 		if args.tree_dot and dot is not None:
 			try:
 				args.tree_dot.write_text(dot, encoding="utf-8")
+				print(f"Árbol exportado a: {args.tree_dot}")
 			except OSError as exc:
 				parser.error(f"No se pudo escribir el archivo DOT: {exc}")
 
@@ -169,6 +171,7 @@ def main(argv: list[str] | None = None) -> int:
 					"Falta la librería Python 'graphviz'. Instálala con: python -m pip install graphviz"
 				)
 			try:
+				print("Generando imagen PNG con Graphviz...")
 				png_bytes = graphviz.Source(dot).pipe(format="png")
 			except Exception as exc:  # incluye Ejecutable dot no encontrado
 				parser.error(
@@ -177,6 +180,7 @@ def main(argv: list[str] | None = None) -> int:
 				)
 			try:
 				args.tree_png.write_bytes(png_bytes)
+				print(f"Árbol exportado como PNG: {args.tree_png}")
 			except OSError as exc:
 				parser.error(f"No se pudo escribir el PNG: {exc}")
 	else:
