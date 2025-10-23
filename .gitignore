@@ -8,3 +8,6 @@ venv/
 !requirements.txt
 !examples/*.txt
 !docs/*.md
+!tests/no aceptados/*.png
+!tests/aceptados/buena semantica/*.png
+!tests/aceptados/mala semantica/*.png

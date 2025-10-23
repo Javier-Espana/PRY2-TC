@@ -1,0 +1,26 @@
+# Gramática simple de alemán (frases básicas con sujeto-verbo-objeto)
+# German simple grammar for basic SVO sentences
+Variables: S, NP, VP, PP, V, P, N, Det, Art
+Terminals: der, die, das, Der, Die, Das, ein, eine, Ein, Eine, Mann, Frau, Kind, Hund, Katze, Buch, Apfel, Kuchen, Wasser, Bier, mann, frau, kind, hund, katze, buch, apfel, kuchen, wasser, bier, isst, trinkt, liest, kauft, sieht, Isst, Trinkt, Liest, Kauft, Sieht, in, mit, auf, In, Mit, Auf, Tisch, Garten, Haus, Schule, tisch, garten, haus, schule
+Start: S
+Rules:
+  S -> NP VP
+
+  VP -> VP PP
+  VP -> V NP
+  VP -> isst | trinkt | liest | kauft | sieht | Isst | Trinkt | Liest | Kauft | Sieht
+
+  PP -> P NP
+
+  NP -> Art N
+  
+  Art -> der | die | das | ein | eine | Der | Die | Das | Ein | Eine
+
+  V -> isst | trinkt | liest | kauft | sieht | Isst | Trinkt | Liest | Kauft | Sieht
+
+  P -> in | mit | auf | In | Mit | Auf
+
+  N -> Mann | Frau | Kind | Hund | Katze | Buch | Apfel | Kuchen | Wasser | Bier
+  N -> mann | frau | kind | hund | katze | buch | apfel | kuchen | wasser | bier
+  N -> Tisch | Garten | Haus | Schule
+  N -> tisch | garten | haus | schule

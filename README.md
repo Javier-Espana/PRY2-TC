@@ -57,7 +57,7 @@ python -m pip install -r requirements.txt
 Una vez instaladas las dependencias, el programa se ejecuta con:
 
 ```bash
-python main.py <archivo_gramatica> "<frase_a_analizar>"
+python main.py examples/<archivo_gramatica> "<frase_a_analizar>"
 ```
 
 **Por defecto**, el programa **genera automáticamente un archivo PNG** con el árbol sintáctico si la frase es aceptada. El nombre del archivo se basa en los tokens de la frase (ejemplo: `She_eats_a_cake.png`).
@@ -188,7 +188,7 @@ Requisitos para `--tree-png`:
 - Paquete Python: `pip install graphviz` (ya está en `requirements.txt`)
 - Binario Graphviz instalado en el sistema y accesible en PATH (`dot`)
 
-## 💬 Discusión
+## Discusión
 
 - **Obstáculos**: manejar símbolos con espacios y reglas con múltiples
   alternativas requiere un analizador robusto; se solucionó permitiendo tokens
@@ -201,27 +201,3 @@ Requisitos para `--tree-png`:
   en minúsculas).
 - **Extensiones futuras**: agregar más formatos de entrada (JSON/YAML), una
   interfaz gráfica y visualizaciones de árboles en formatos estándar (Graphviz).
-
-## 📂 Estructura del proyecto
-
-```
-PRY2-TC/
-├── main.py              # CLI principal
-├── requirements.txt     # Dependencias del proyecto
-├── src/
-│   ├── __init__.py      # Punto de entrada del paquete
-│   ├── parser.py        # Capa de compatibilidad / API pública
-│   ├── grammar.py       # Modelo de la gramática
-│   ├── grammar_io.py    # Parser y serialización de gramáticas
-│   ├── cnf.py           # Conversión a Forma Normal de Chomsky
-│   ├── cyk.py           # Algoritmo CYK y reconstrucción del árbol
-│   ├── utils.py         # Utilidades auxiliares (tokenización, etc.)
-│   └── visualize.py     # Generación de grafos DOT para Graphviz
-├── README.md            # Este documento
-└── examples/
-    ├── grammar.txt              # Gramática de ejemplo
-    └── grammar_instructions.txt # Gramática del enunciado del proyecto
-```
-
-> Nota: crea la carpeta `examples/` con tu propia gramática para ejecutar los
-> ejemplos anteriores.
